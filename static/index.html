@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Resume Assistant</title>
+  <style>
+    body { font-family: Arial; background:#0f172a; color:white; text-align:center; }
+    .box { background:#1e293b; padding:30px; width:60%; margin:auto; margin-top:50px; border-radius:10px; }
+    input, button { padding:10px; margin:10px; border-radius:5px; }
+    button { background:#3b82f6; color:white; border:none; }
+    #answer { margin-top:20px; white-space:pre-wrap; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>AI Resume Assistant</h1>
+
+  <input type="file" id="file" />
+  <button onclick="upload()">Upload PDF</button>
+
+  <br><br>
+
+  <input type="text" id="question" placeholder="Ask a question..." size="50"/>
+  <button onclick="ask()">Ask</button>
+
+  <div id="answer"></div>
+</div>
+
+<script>
+async function upload() {
+  let file = document.getElementById("file").files[0];
+  let formData = new FormData();
+  formData.append("file", file);
+
+  await fetch("/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  alert("PDF uploaded!");
+}
+
+async function ask() {
+  let q = document.getElementById("question").value;
+  let res = await fetch(`/ask?question=${encodeURIComponent(q)}`);
+  let data = await res.json();
+  document.getElementById("answer").innerText = data.answer;
+}
+</script>
+
+</body>
+</html>
